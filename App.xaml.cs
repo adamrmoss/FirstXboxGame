@@ -64,12 +64,6 @@ namespace FirstXboxGame
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
-
-            Window.Current.CoreWindow.PointerCursor   = null;
-            Window.Current.CoreWindow.PointerPosition = new Point(42, 42);
-
-            var view = ApplicationView.GetForCurrentView();
-            view.TryEnterFullScreenMode();
         }
 
         /// <summary>

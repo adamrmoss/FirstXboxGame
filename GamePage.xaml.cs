@@ -19,7 +19,7 @@ namespace FirstXboxGame
 
             // Create the game.
             var launchArguments = string.Empty;
-            this.game = MonoGame.Framework.XamlGame<FirstXboxGame>.Create(launchArguments, Window.Current.CoreWindow, swapChainPanel);
+            this.game = MonoGame.Framework.XamlGame<FirstXboxGame>.Create(launchArguments, Window.Current.CoreWindow, this.swapChainPanel);
         }
 
         private static void MaximizeWindowOnLoad()

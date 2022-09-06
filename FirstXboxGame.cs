@@ -9,36 +9,45 @@ namespace FirstXboxGame
     public class FirstXboxGame : Game
     {
         private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
+        private SpriteBatch           spriteBatch;
+        private Size                  resolution;
+        private Rectangle             screenBounds;
+        private Rectangle             viewportBounds;
+        private Rectangle             viewportTitleSafeArea;
+        private Color                 matteColor;
+        private Texture2D             matteTexture;
 
         public FirstXboxGame()
         {
             this.graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
-            this.IsMouseVisible = false;
+            this.IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
-
+            // Save screen info
             var view = DisplayInformation.GetForCurrentView();
 
-            var resolution = new Size(view.ScreenWidthInRawPixels, view.ScreenHeightInRawPixels);
+            this.resolution   = new Size(view.ScreenWidthInRawPixels, view.ScreenHeightInRawPixels);
+            this.screenBounds = new Rectangle(0, 0, (int) this.resolution.Width, (int) this.resolution.Height);
 
-            var bounds = new Size(resolution.Width, resolution.Height);
+            // Background Texture
+            this.matteColor = Color.DarkOliveGreen;
 
+            var textureData = new Color[1];
+            textureData[0] = this.matteColor;
 
-            var viewportBounds        = this.GraphicsDevice.Viewport.Bounds;
-            var viewportTitleSafeArea = this.GraphicsDevice.Viewport.TitleSafeArea;
+            this.matteTexture = new Texture2D(this.GraphicsDevice, 1, 1);
+            this.matteTexture.SetData(textureData);
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            this.spriteBatch = new SpriteBatch(this.GraphicsDevice);
+            // Create the Sprite Batch
+            this.spriteBatch  = new SpriteBatch(this.GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
@@ -61,12 +70,18 @@ namespace FirstXboxGame
 
         protected override void Draw(GameTime gameTime)
         {
-            this.GraphicsDevice.Clear(Color.Yellow);
+            // Get Viewport bounds
+            this.viewportBounds        = this.GraphicsDevice.Viewport.Bounds;
+            this.viewportTitleSafeArea = this.GraphicsDevice.Viewport.TitleSafeArea;
 
-            //var viewportBounds        = this.GraphicsDevice.Viewport.Bounds;
-            //var viewportTitleSafeArea = this.GraphicsDevice.Viewport.TitleSafeArea;
+            // Clear the viewport with matte color
+            this.GraphicsDevice.Clear(this.matteColor);
 
-            // TODO: Add your drawing code here
+            // Draw screen
+            this.spriteBatch.Begin();
+            this.spriteBatch.Draw(this.matteTexture, this.screenBounds, Color.White);
+            this.spriteBatch.Draw(this.matteTexture, this.viewportTitleSafeArea, Color.White);
+            this.spriteBatch.End();
 
             base.Draw(gameTime);
         }

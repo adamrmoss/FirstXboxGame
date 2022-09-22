@@ -15,31 +15,37 @@ namespace FirstXboxGame
         private Rectangle             viewportBounds;
         private Rectangle             viewportTitleSafeArea;
         private Color                 matteColor;
+        private Color                 backgroundColor;
         private Texture2D             matteTexture;
+        private Texture2D             backgroundTexture;
 
         public FirstXboxGame()
         {
             this.graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
-            this.IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
+            this.IsMouseVisible = true;
+
             // Save screen info
             var view = DisplayInformation.GetForCurrentView();
 
             this.resolution   = new Size(view.ScreenWidthInRawPixels, view.ScreenHeightInRawPixels);
             this.screenBounds = new Rectangle(0, 0, (int) this.resolution.Width, (int) this.resolution.Height);
 
-            // Background Texture
-            this.matteColor = Color.DarkOliveGreen;
+            // Screen Colors
+            this.matteColor      = Color.Red;
+            this.backgroundColor = Color.Gray;
 
-            var textureData = new Color[1];
-            textureData[0] = this.matteColor;
-
+            // Matte Texture
             this.matteTexture = new Texture2D(this.GraphicsDevice, 1, 1);
-            this.matteTexture.SetData(textureData);
+            this.matteTexture.SetData(new [] { this.matteColor });
+
+            // Background Texture
+            this.backgroundTexture = new Texture2D(this.GraphicsDevice, 1, 1);
+            this.backgroundTexture.SetData(new [] { this.backgroundColor });
 
             base.Initialize();
         }
@@ -63,24 +69,37 @@ namespace FirstXboxGame
                 this.Exit();
             }
 
-            // TODO: Add your update logic here
+            if (!this.graphics.IsFullScreen)
+            {
+                this.graphics.ToggleFullScreen();
+            }
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
+            var isFullScreen           = this.graphics.IsFullScreen;
+            var presentationParameters = this.graphics.GraphicsDevice.PresentationParameters;
+            
+
+            this.GraphicsDevice.DisplayMode.
+
             // Get Viewport bounds
             this.viewportBounds        = this.GraphicsDevice.Viewport.Bounds;
             this.viewportTitleSafeArea = this.GraphicsDevice.Viewport.TitleSafeArea;
+
+            var matteOffsetX  = -(this.screenBounds.Width  - this.viewportTitleSafeArea.Width)  / 2;
+            var matteOffsetY  = -(this.screenBounds.Height - this.viewportTitleSafeArea.Height) / 2;
+            var relativeMatte = new Rectangle(matteOffsetX, matteOffsetY, this.screenBounds.Width, this.screenBounds.Height);
 
             // Clear the viewport with matte color
             this.GraphicsDevice.Clear(this.matteColor);
 
             // Draw screen
             this.spriteBatch.Begin();
-            this.spriteBatch.Draw(this.matteTexture, this.screenBounds, Color.White);
-            this.spriteBatch.Draw(this.matteTexture, this.viewportTitleSafeArea, Color.White);
+            this.spriteBatch.Draw(this.matteTexture,      relativeMatte,              Color.White);
+            this.spriteBatch.Draw(this.backgroundTexture, this.viewportTitleSafeArea, Color.White);
             this.spriteBatch.End();
 
             base.Draw(gameTime);

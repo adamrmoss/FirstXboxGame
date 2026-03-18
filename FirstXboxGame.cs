@@ -47,6 +47,10 @@ namespace FirstXboxGame
             this.backgroundTexture = new Texture2D(this.GraphicsDevice, 1, 1);
             this.backgroundTexture.SetData(new [] { this.backgroundColor });
 
+            Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().SetDesiredBoundsMode(
+                Windows.UI.ViewManagement.ApplicationViewBoundsMode.UseCoreWindow
+            );
+
             base.Initialize();
         }
 
@@ -81,9 +85,6 @@ namespace FirstXboxGame
         {
             var isFullScreen           = this.graphics.IsFullScreen;
             var presentationParameters = this.graphics.GraphicsDevice.PresentationParameters;
-            
-
-            this.GraphicsDevice.DisplayMode.
 
             // Get Viewport bounds
             this.viewportBounds        = this.GraphicsDevice.Viewport.Bounds;
